@@ -1,4 +1,6 @@
+import math
 from typing import List, Tuple, Dict
+from qiskit import QuantumRegister, QuantumCircuit
 
 def puzzle_indices(n_squared: int) -> List[Tuple[int, int]]:
     """Generate all (i, j) indices for an n_squared x n_squared grid."""
@@ -50,6 +52,67 @@ def indices_of_non_equal_elements(n: int) -> List[Tuple[int, int]]:
     
     return result
 
+def initialize_registers(puzzle: List[List[int]]) -> List[QuantumRegister]:
+    registers = []
+    n_squared = len(puzzle)
+    
+    # Check if all rows have the same length as the number of rows (square matrix)
+    if not all(len(row) == n_squared for row in puzzle):
+        raise ValueError("Expected a square matrix!")
+    
+    n = int(math.sqrt(n_squared))
+    if n * n != n_squared:
+        raise ValueError("Expected a square matrix of square size!")
+    
+    number_of_bits = math.log(n, 2) + 1
+    if number_of_bits != int(number_of_bits):
+        raise ValueError("Expected a square matrix of size equal to a power of 4!")
+    
+    number_of_bits_integer = int(number_of_bits)
+    index = 0
+    for i in range(n_squared):
+        for j in range(n_squared):
+            register_name = f'q{index}: (cell {(i,j)})'
+            registers.append(QuantumRegister(size =  number_of_bits_integer, name = register_name))
+            index += 1
+
+    index = 0
+
+    qc = QuantumCircuit(*registers)
+    for i in range(n_squared):
+        for j in range(n_squared):
+            current_value = puzzle[i][j]
+            if current_value != 0:
+                current_binary_value = to_binary(current_value, number_of_bits_integer)
+                initialize_register(qc, registers[index], current_binary_value)
+            index += 1
+
+    return (qc,registers)
+
+def initialize_register(qc: QuantumCircuit, register: QuantumRegister, binary_value: List[int]):
+    index : int = 0
+    for current in binary_value:
+        if (current == 1):
+            qc.x(register[index])
+            qc.barrier()
+        index = index + 1
+
+def to_binary(number: int, number_of_bits: int) -> List[int]:
+    result = []
+    for i in range(number_of_bits):
+        result.append(number % 2)
+        number //= 2
+    return result
+
 # Example usage:
 if __name__ == "__main__":
-    print(indices_of_non_equal_elements(2))
+    # Example 4x4 Sudoku puzzle (0 represents empty cells)
+    sample_puzzle = [
+        [1, 0, 0, 4],
+        [0, 2, 0, 0],
+        [0, 0, 3, 0],
+        [4, 0, 0, 1]
+    ]
+    
+    qc, registers = initialize_registers(sample_puzzle)
+    print(qc)
