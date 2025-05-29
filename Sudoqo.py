@@ -97,13 +97,11 @@ def initialize_known_register(qc: QuantumCircuit, register: QuantumRegister, bin
     for current in binary_value:
         if (current == 1):
             qc.x(register[index])
-            qc.barrier()
         index = index + 1
 
 def initialize_unknown_register(qc: QuantumCircuit, register: QuantumRegister, size: int):
     for index in range(0, size):
         qc.h(register[index])
-
 
 def to_binary(number: int, number_of_bits: int) -> List[int]:
     result = []
