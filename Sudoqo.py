@@ -64,7 +64,7 @@ def initialize_registers(puzzle: List[List[int]]) -> List[QuantumRegister]:
     if n * n != n_squared:
         raise ValueError("Expected a square matrix of square size!")
     
-    number_of_bits = math.log(n, 2) + 1
+    number_of_bits = 2 * math.log(n, 2)
     if number_of_bits != int(number_of_bits):
         raise ValueError("Expected a square matrix of size equal to a power of 4!")
     
