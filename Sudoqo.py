@@ -83,19 +83,27 @@ def initialize_registers(puzzle: List[List[int]]) -> List[QuantumRegister]:
         for j in range(n_squared):
             current_value = puzzle[i][j]
             if current_value != 0:
-                current_binary_value = to_binary(current_value, number_of_bits_integer)
-                initialize_register(qc, registers[index], current_binary_value)
+                # Subtract one to make the values between 0 and n-1
+                current_binary_value = to_binary(current_value-1, number_of_bits_integer)
+                initialize_known_register(qc, registers[index], current_binary_value)
+            else:
+                initialize_unknown_register(qc, registers[index], number_of_bits_integer)
             index += 1
 
     return (qc,registers)
 
-def initialize_register(qc: QuantumCircuit, register: QuantumRegister, binary_value: List[int]):
+def initialize_known_register(qc: QuantumCircuit, register: QuantumRegister, binary_value: List[int]):
     index : int = 0
     for current in binary_value:
         if (current == 1):
             qc.x(register[index])
             qc.barrier()
         index = index + 1
+
+def initialize_unknown_register(qc: QuantumCircuit, register: QuantumRegister, size: int):
+    for index in range(0, size):
+        qc.h(register[index])
+
 
 def to_binary(number: int, number_of_bits: int) -> List[int]:
     result = []
