@@ -22,7 +22,7 @@ def indices_of_non_equal_elements(n: int) -> List[Tuple[int, int]]:
     # Create a dictionary mapping position tuples to their index in the list
     position_to_index: Dict[Tuple[int, int], int] = {pos: i for i, pos in enumerate(indices)}
 
-    for index in range(n_squared):
+    for index in range(n_squared * n_squared):
         i: int
         j: int
         i, j = indices[index]
