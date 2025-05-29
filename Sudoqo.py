@@ -27,11 +27,9 @@ def indices_of_non_equal_elements(n: int) -> List[Tuple[int, int]]:
         
         # Get all indices in the same row
         row_indices: List[Tuple[int, int]] = [(i, column) for column in range(n_squared)]
-        print(row_indices)
 
         # Get all indices in the same column
         column_indices: List[Tuple[int, int]] = [(row, j) for row in range(n_squared)]
-        print(column_indices)
         
         # Get all indices in the same n x n square
         current_square_row: int = n * (i // n)
@@ -40,13 +38,10 @@ def indices_of_non_equal_elements(n: int) -> List[Tuple[int, int]]:
             (row, column)
             for row in range(current_square_row, current_square_row + n)
             for column in range(current_square_column, current_square_column + n)
-        ]
-        print(square_indices)
-        
+        ]        
 
         # Combine all indices (using set to remove duplicates, then convert back to list)
         all_indices: List[Tuple[int, int]] = list(set(position_to_index[position] for position in row_indices + column_indices + square_indices))
-        print(all_indices)
 
         # Add pairs where the other index is greater than current index
         for current_index in all_indices:
