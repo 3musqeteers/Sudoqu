@@ -1,104 +1,60 @@
-import math
 from typing import List, Tuple, Dict
 
-def constraints(puzzle: List[List[int]]) -> Tuple[List[Tuple[int, int]], Dict[int, List[int]], Dict[int, List[int]]]:
-    """
-    Generate constraints for a Sudoku puzzle.
-    
-    Args:
-        puzzle: 2D list representing the Sudoku puzzle (0 for empty cells)
-    
-    Returns:
-        Tuple containing:
-        - indices: List of (row, col) positions of empty cells
-        - index_constraints: Dict mapping each empty cell index to indices of other empty cells in same row/col/square
-        - constant_constraints: Dict mapping each empty cell index to known values in same row/col/square
-    """
-    for index in range(len(puzzle)):
-        if len(puzzle) != len(puzzle[index]):
-            raise ValueError("Expected a square puzzle!")
-
-    n_squared = len(puzzle)
-    n = int(math.sqrt(n_squared))
-    
-    if n * n != n_squared:
-        raise ValueError("Expected a square puzzle of square size!")
-    
-    indices = get_indices_of_empty_values(puzzle, n_squared)
-    position_to_index = {pos: i for i, pos in enumerate(indices)}
-    
-    constant_constraints = {}
-    index_constraints = {}
-    
-    for index in range(len(indices)):
-        i, j = indices[index]
-        
-        # Get all positions in the same row
-        row_indices = [(i, col) for col in range(n_squared)]
-        
-        # Get all positions in the same column
-        column_indices = [(row, j) for row in range(n_squared)]
-        
-        # Get all positions in the same n×n square
-        current_square_row = n * (i // n)
-        current_square_column = n * (j // n)
-        square_indices = [
-            (row, col) 
-            for row in range(current_square_row, current_square_row + n)
-            for col in range(current_square_column, current_square_column + n)
-        ]
-        
-        # Combine all constraint positions (remove duplicates using set)
-        all_indices = list(set(row_indices + column_indices + square_indices))
-        
-        # Get constant constraints (non-zero values in same row/col/square)
-        constant_constraints[index] = list(set([
-            puzzle[pos[0]][pos[1]] 
-            for pos in all_indices 
-            if puzzle[pos[0]][pos[1]] != 0
-        ]))
-        
-        # Get index constraints (indices of other empty cells in same row/col/square)
-        index_constraints[index] = [
-            position_to_index[pos] 
-            for pos in all_indices 
-            if puzzle[pos[0]][pos[1]] == 0 and position_to_index[pos] != index
-        ]
-    
-    return indices, index_constraints, constant_constraints
-
-
-def get_indices_of_empty_values(puzzle: List[List[int]], n_squared: int) -> List[Tuple[int, int]]:
-    """
-    Get the indices of all empty (zero) values in the puzzle.
-    
-    Args:
-        puzzle: 2D list representing the puzzle
-        n_squared: Size of the puzzle (number of rows/columns)
-    
-    Returns:
-        List of (row, col) tuples for empty positions
-    """
-    result = []
+def puzzle_indices(n_squared: int) -> List[Tuple[int, int]]:
+    """Generate all (i, j) indices for an n_squared x n_squared grid."""
+    result: List[Tuple[int, int]] = []
     for i in range(n_squared):
         for j in range(n_squared):
-            if puzzle[i][j] == 0:
-                result.append((i, j))
+            result.append((i, j))
     return result
 
+def indices_of_non_equal_elements(n: int) -> List[Tuple[int, int]]:
+    """
+    Generate pairs of indices that must have non-equal elements in a Sudoku-like puzzle.
+    Returns a list of tuples where each tuple contains two indices that cannot have the same value.
+    """
+    result: List[Tuple[int, int]] = []
+    n_squared: int = n * n
+    indices: List[Tuple[int, int]] = puzzle_indices(n_squared)
+    
+    # Create a dictionary mapping position tuples to their index in the list
+    position_to_index: Dict[Tuple[int, int], int] = {pos: i for i, pos in enumerate(indices)}
+
+    for index in range(n_squared):
+        i: int
+        j: int
+        i, j = indices[index]
+        
+        # Get all indices in the same row
+        row_indices: List[Tuple[int, int]] = [(i, column) for column in range(n_squared)]
+        print(row_indices)
+
+        # Get all indices in the same column
+        column_indices: List[Tuple[int, int]] = [(row, j) for row in range(n_squared)]
+        print(column_indices)
+        
+        # Get all indices in the same n x n square
+        current_square_row: int = n * (i // n)
+        current_square_column: int = n * (j // n)
+        square_indices: List[Tuple[int, int]] = [
+            (row, column)
+            for row in range(current_square_row, current_square_row + n)
+            for column in range(current_square_column, current_square_column + n)
+        ]
+        print(square_indices)
+        
+
+        # Combine all indices (using set to remove duplicates, then convert back to list)
+        all_indices: List[Tuple[int, int]] = list(set(position_to_index[position] for position in row_indices + column_indices + square_indices))
+        print(all_indices)
+
+        # Add pairs where the other index is greater than current index
+        for current_index in all_indices:
+            if current_index > index:
+                result.append((index, current_index))
+    
+    return result
 
 # Example usage:
 if __name__ == "__main__":
-    # Example 4x4 Sudoku puzzle (0 represents empty cells)
-    sample_puzzle = [
-        [1, 0, 0, 4],
-        [0, 2, 0, 0],
-        [0, 0, 3, 0],
-        [4, 0, 0, 1]
-    ]
-    
-    indices, index_constraints, constant_constraints = constraints(sample_puzzle)
-    
-    print("Empty cell positions:", indices)
-    print("Index constraints:", index_constraints)
-    print("Constant constraints:", constant_constraints)
+    print(indices_of_non_equal_elements(2))
