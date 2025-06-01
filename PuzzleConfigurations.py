@@ -136,7 +136,9 @@ def main() -> None:
     ]
 
     print("Started with the following puzzle:")
-    print(puzzle)
+    for row in puzzle:
+        print(row)
+    print()
 
     changes = 0
     while True:
@@ -147,8 +149,10 @@ def main() -> None:
             break
 
     print("Completed trivial missing values. Current puzzle:")
-    print(puzzle)
-    
+    for row in puzzle:
+        print(row)
+    print()
+
     for row_index, (cell_positions, possible_configurations) in enumerate(row_possible_values(puzzle)):
         cells_str = ", ".join(str((r,c)) for r, c in cell_positions)
         configs_str = ", ".join(str(config) for config in possible_configurations)
