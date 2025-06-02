@@ -125,7 +125,17 @@ def complete_trivial_missing_square_values(puzzle: List[List[int]]) -> int:
 
     return number_of_changes
 
+def complete_all_trivial_missing_values(puzzle: List[List[int]]) -> int:
 
+    changes = 0
+    while True:
+        changes = complete_trivial_missing_values(puzzle, GroupToCheck.ROW)
+        changes += complete_trivial_missing_values(puzzle, GroupToCheck.COLUMN)
+        changes += complete_trivial_missing_square_values(puzzle)
+        if changes == 0:
+            break
+
+    return changes
 
 def main() -> None:
     puzzle: List[List[int]] = [
@@ -140,13 +150,7 @@ def main() -> None:
         print(row)
     print()
 
-    changes = 0
-    while True:
-        changes = complete_trivial_missing_values(puzzle, GroupToCheck.ROW)
-        changes += complete_trivial_missing_values(puzzle, GroupToCheck.COLUMN)
-        changes += complete_trivial_missing_square_values(puzzle)
-        if changes == 0:
-            break
+    complete_all_trivial_missing_values(puzzle)
 
     print("Completed trivial missing values. Current puzzle:")
     for row in puzzle:
