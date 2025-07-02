@@ -117,10 +117,10 @@ def solve_sudoqu(puzzle : List[List[int]]):
 
 def main():
     puzzle: List[List[int]] = [
-        [3, 1, 4, 2],
-        [2, 0, 0, 1],
-        [1, 0, 0, 0],
-        [4, 0, 0, 3]
+        [0, 0, 2, 3],
+        [0, 2, 0, 4],
+        [0, 1, 3, 0],
+        [0, 0, 4, 1]
     ]
 
     print("Started with the following puzzle:")
