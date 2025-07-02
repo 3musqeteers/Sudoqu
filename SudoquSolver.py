@@ -18,18 +18,18 @@ def solve_sudoqu(puzzle : List[List[int]]):
     constraints = [constraint for constraint in constraints if constraint[0] != [] ]
     number_of_constraints = len(constraints)
 
-    # Our next step is to initiate our qubits and a circuit. Let $n$ be the number of unknowns on the board after completing obvous unknowns.
+    # Our next step is to initiate our qubits and a circuit. Let n be the number of unknowns on the board after completing obvous unknowns.
     # To represent the four numbers 1, 2, 3, 4 we will need 2 bits. Each bit we can then represent via a quibit in the obvious way:
-    # $0 \mapsto |0> and 1 \mapsto |1>. Thus we need two qubits to represent the four numbers 1, 2, 3, 4 via qubits.
+    # 0 \mapsto |0> and 1 \mapsto |1>. Thus we need two qubits to represent the four numbers 1, 2, 3, 4 via qubits.
     # Hence, we initiate 2n qubits for the unknowns. 
-    # Notation: We will use the number $0$ to represent an unknown on the board.
-    # To save space, we will then represent the numbers 1, 2, 3, 4 as follows via bits: $$1\mapsto 00,$$
+    # Notation: We will use the number 0 to represent an unknown on the board.
+    # To save space, we will then represent the numbers 1, 2, 3, 4 as follows via bits: 1\mapsto 00,
     # 2 \mapsto 01
     # 3 \mapsto 10 
     # 4 \mapsto 11.
-    # Notation: Let $i$ be an integer from $0$ to $n-1$. We denote by u_i the qubit corresponding to the zeroth bit
-    # of the $i$-th unknown and by t_i the first bit of the $i$-th unknown. For example, if the 7-th unknown ends up being 3,
-    # we represent it with the bits $10$ and thus u_7=0 and t_7=1.
+    # Notation: Let i be an integer from 0 to n-1. We denote by u_i the qubit corresponding to the zeroth bit
+    # of the i-th unknown and by t_i the first bit of the i-th unknown. For example, if the 7-th unknown ends up being 3,
+    # we represent it with the bits 10 and thus u_7=0 and t_7=1.
     quantum_register_u = QuantumRegister(size=number_of_unknowns, name="u") #first bit of each unknown
     quantum_register_t = QuantumRegister(size=number_of_unknowns, name="t") #second bit of each unknown
     ancilla_register = AncillaRegister(size=number_of_constraints + 1, name="a") #ancilla bits for the sudoku constraints
