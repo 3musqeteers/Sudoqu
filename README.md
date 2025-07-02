@@ -1,5 +1,5 @@
 # Sudoqu
-2x2 Sudoku solver in Qiskit!
+$2^2 \times 2^2$ Sudoku solver in Qiskit!
 
 ## Usage
 ```python
